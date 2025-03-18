@@ -1,0 +1,56 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: homework
+  namespace: homework
+spec:
+  containers:
+  - name: web
+    image: nginx
+    ports:
+    - containerPort: 8000
+    volumeMounts:
+    - name: share
+      mountPath: /homework
+    - name: nginx-config
+      mountPath: /etc/nginx/conf.d
+    lifecycle:
+      preStop:
+        exec:
+          command: ["rm", "/homework/index.html"]
+  initContainers:
+  - name: init
+    image: busybox
+    command:
+    - wget
+    - "-O"
+    - "/init/index.html"
+    - http://otus.ru
+    volumeMounts:
+    - name: share
+      mountPath: "/init"
+  dnsPolicy: Default
+  volumes:
+  - name: share
+    emptyDir: {}
+  - name: nginx-config
+    configMap:
+      name: nginx-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: homework
+data:
+  homework.conf: |
+      server {
+        listen 8000;
+        
+        location / {
+          root   /homework;
+          index  index.html index.htm;
+        }
+      }
+
