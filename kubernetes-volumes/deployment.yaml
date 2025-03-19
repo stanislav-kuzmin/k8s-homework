@@ -14,7 +14,11 @@ spec:
     spec:
       volumes:
         - name: data-volume
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: my-pvc
+        - name: config
+          configMap:
+            name: my-cm
       initContainers:
         - name: generate-index
           image: busybox
@@ -33,3 +37,5 @@ spec:
           volumeMounts:
             - name: data-volume
               mountPath: /homework
+            - name: config
+              mountPath: /homework/conf
