@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: http-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: http-server
+  template:
+    metadata:
+      labels:
+        app: http-server
+    spec:
+      volumes:
+        - name: data-volume
+          emptyDir: {}
+      initContainers:
+        - name: generate-index
+          image: busybox
+          command: ["sh", "-c"]
+          args: ["echo '<html><p>Hellow world!</p></html>' > /init/index.html"]
+          volumeMounts:
+            - name: data-volume
+              mountPath: /init
+      containers:
+        - name: server-container
+          image: python:3.13
+          ports:
+            - containerPort: 8000
+          command: ["python"]
+          args: ["-m", "http.server", "8000", "--directory", "/homework"]
+          volumeMounts:
+            - name: data-volume
+              mountPath: /homework
