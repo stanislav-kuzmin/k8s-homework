@@ -1,1 +1,20 @@
 # k8s-homework
+
+Horizontal pod autoscaler:
+
+kubectl apply -f php-apache.yaml
+
+kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=10
+
+
+Vertical pod autoscaler:
+
+git clone https://github.com/kubernetes/autoscaler.git
+
+cd autoscaler
+
+./hack/vpa-up.sh
+
+kubectl get pods -n kube-system | grep vpa
+
+
