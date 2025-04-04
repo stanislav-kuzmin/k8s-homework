@@ -1,0 +1,9 @@
+deploymentName:
+container:
+  name:
+replicasCount:
+image:
+  name:
+  version:
+containerPort:
+probesEnabled:
