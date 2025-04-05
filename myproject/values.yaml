@@ -1,9 +1,9 @@
-deploymentName:
+deploymentName: "http-server"
 container:
-  name:
-replicasCount:
+  name: "server-container"
+  port: 8000
+replicasCount: 1
 image:
-  name:
-  version:
-containerPort:
-probesEnabled:
+  name: "python"
+  version: "3.13"
+probesEnabled: true

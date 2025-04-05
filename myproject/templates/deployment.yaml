@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: http-server
+  name: {{ .Values.deploymentName }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicasCount }}
   selector:
     matchLabels:
       app: http-server
@@ -28,10 +28,10 @@ spec:
             - name: data-volume
               mountPath: /init
       containers:
-        - name: server-container
-          image: python:3.13
+        - name: {{ .Values.container.name }}
+          image: {{ .Values.image.name }}:{{ .Values.image.version }}
           ports:
-            - containerPort: 8000
+            - containerPort: {{ .Values.container.port }}
           command: ["python"]
           args: ["-m", "http.server", "8000", "--directory", "/homework"]
           volumeMounts:
@@ -42,12 +42,12 @@ spec:
           {{- if eq .Values.probesEnabled "true" }}
           readinessProbe:
             tcpSocket:
-              port: 8000
+              port: {{ .Values.container.port }}
             initialDelaySeconds: 15
             periodSeconds: 10
           livenessProbe:
             tcpSocket:
-              port: 8000
+              port: {{ .Values.container.port }}
             initialDelaySeconds: 15
             periodSeconds: 10
           {{- end }}
